@@ -1,5 +1,8 @@
 #
-# Dummy action to test different types of configurations
+# GITHUB ACTIONS PIPELINE 
+# This config is intended to build multiple container images, vía Docker Buildx, for several hardware architectures.
+#
+# Last update: 2024/02/06
 #
 
 on:
@@ -49,7 +52,6 @@ jobs:
           type=raw,value=latest,enable=true,priority=200
           # type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
 
-
     # https://github.com/docker/setup-qemu-action
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -67,7 +69,6 @@ jobs:
       with:
         platforms: linux/amd64, linux/arm64, linux/arm/v7
 
-
     # https://github.com/docker/build-push-action
     - name: Build and push
       uses: docker/build-push-action@v5
@@ -75,7 +76,6 @@ jobs:
         context: .
         platforms: linux/amd64, linux/arm64, linux/arm/v7
         push: true
-        # tags: safebytelabsjgonf/test_helloworld
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         
