@@ -25,11 +25,6 @@ jobs:
 
     runs-on: ["self-hosted", "m92p"]
     environment: env_test_helloworld
-    permissions:
-      contents: read
-      packages: write
-      id-token: write 
-      # This is used to complete the identity challenge with sigstore/fulcio when running outside of PRs.
 
     steps:
 
@@ -52,12 +47,6 @@ jobs:
           type=semver,pattern={{major}}
           type=sha 
           type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
-
-    # https://github.com/sigstore/cosign-installer
-    - name: Install cosign
-      uses: sigstore/cosign-installer@v3.4.0
-      with:
-        cosign-release: 'v2.2.3' # optional
 
     # https://github.com/docker/setup-qemu-action
     - name: Set up QEMU
@@ -83,15 +72,7 @@ jobs:
         context: .
         platforms: linux/amd64
         push: true
-        tags: safebytelabsjgonf/test_helloworld
+        # tags: safebytelabsjgonf/test_helloworld
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
         
-    # https://github.com/sigstore/cosign
-    - name: Sign the published Docker image
-      env:
-        TAGS: ${{ steps.meta.outputs.tags }}
-        DIGEST: ${{ steps.build-and-push.outputs.digest }}
-        LABELS: ${{ steps.meta.outputs.labels }}
-      run: |
-        echo "${TAGS}" | tr ',' '\n' | xargs -I {} cosign sign --yes ${REGISTRY}/${IMAGE_NAME}
-        echo "${LABELS}"
-
