@@ -42,7 +42,7 @@ jobs:
       uses: docker/metadata-action@v5
       id: meta
       with:
-        images: safebytelabsjgonf/github-selfhosted-runner
+        images: safebytelabsjgonf/test_helloworld
         tags: |
           type=schedule
           type=sha 
@@ -78,8 +78,8 @@ jobs:
         context: .
         platforms: linux/amd64
         push: true
-        tags: safebytelabsjgonf/github-selfhosted-runner:latest
-
+        tags: safebytelabsjgonf/test_helloworld
+        
     # https://github.com/sigstore/cosign
     - name: Sign the published Docker image
       env:
